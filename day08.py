@@ -3,7 +3,7 @@ input = "22222221202222220222222222222012222222202021222202120222020022220222122
 
 def checksum(s, w, h):
     layers = [s[i:i + w * h] for i in range(0, len(s), w * h)]
-    best_layer = min(layers, key=lambda layer : layer.count('0'))
+    best_layer = min(layers, key=lambda layer: layer.count('0'))
     return best_layer.count('1') * best_layer.count('2')
 
 
