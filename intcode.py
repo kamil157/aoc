@@ -1,4 +1,4 @@
-from queue import Queue
+from collections import deque
 
 
 def split_opcode(full_opcode):
@@ -33,90 +33,84 @@ def get_address(l, n, mode, base):
 class Intcode:
     def __init__(self, s):
         self.memory = [int(n) for n in s.split(',')]
-        for _ in range(1000):
-            self.memory.append(0)
-        self.program_counters = [0, 0]
-        self.inputs = Queue()
+        self.memory.extend([0] * 1000)
+        self.pc = 0
+        self.base = 0
+        self.inputs = deque()
 
     def input(self, user_input):
-        self.inputs.put(user_input)
+        self.inputs.append(user_input)
 
     def run(self):
-        pc = self.program_counters[0]
-        base = self.program_counters[1]
-        l = self.memory
-
         while True:
-            next_opcode = l[pc]
+            next_opcode = self.memory[self.pc]
             # print('opcode', next_opcode)
             modes, opcode = split_opcode(next_opcode)
 
             # print(opcode)
 
             if opcode == 1:  # ADD
-                a = get(l, pc + 1, modes[2], base)
-                b = get(l, pc + 2, modes[1], base)
+                a = get(self.memory, self.pc + 1, modes[2], self.base)
+                b = get(self.memory, self.pc + 2, modes[1], self.base)
                 assert modes[0] != 1
-                address = get_address(l, pc + 3, modes[0], base)
-                pc += 4
-                l[address] = a + b
+                address = get_address(self.memory, self.pc + 3, modes[0], self.base)
+                self.pc += 4
+                self.memory[address] = a + b
             elif opcode == 2:  # MUL
-                a = get(l, pc + 1, modes[2], base)
-                b = get(l, pc + 2, modes[1], base)
+                a = get(self.memory, self.pc + 1, modes[2], self.base)
+                b = get(self.memory, self.pc + 2, modes[1], self.base)
                 assert modes[0] != 1
-                address = get_address(l, pc + 3, modes[0], base)
-                pc += 4
-                l[address] = a * b
+                address = get_address(self.memory, self.pc + 3, modes[0], self.base)
+                self.pc += 4
+                self.memory[address] = a * b
             elif opcode == 3:  # INPUT
-                address = get_address(l, pc + 1, modes[2], base)
-                pc += 2
-                l[address] = self.inputs.get()
+                address = get_address(self.memory, self.pc + 1, modes[2], self.base)
+                self.pc += 2
+                self.memory[address] = self.inputs.popleft()
                 # print(self.inputs.qsize())
             elif opcode == 4:  # OUTPUT
-                output = get(l, pc + 1, modes[2], base)
-                pc += 2
+                output = get(self.memory, self.pc + 1, modes[2], self.base)
+                self.pc += 2
                 # print(output)
-                self.program_counters[0] = pc
-                self.program_counters[1] = base
                 return output
             elif opcode == 5:  # JUMP IF NOT 0
-                a = get(l, pc + 1, modes[2], base)
-                b = get(l, pc + 2, modes[1], base)
+                a = get(self.memory, self.pc + 1, modes[2], self.base)
+                b = get(self.memory, self.pc + 2, modes[1], self.base)
                 if a != 0:
-                    pc = b
+                    self.pc = b
                 else:
-                    pc += 3
+                    self.pc += 3
             elif opcode == 6:  # JUMP IF 0
-                a = get(l, pc + 1, modes[2], base)
-                b = get(l, pc + 2, modes[1], base)
+                a = get(self.memory, self.pc + 1, modes[2], self.base)
+                b = get(self.memory, self.pc + 2, modes[1], self.base)
                 if a == 0:
-                    pc = b
+                    self.pc = b
                 else:
-                    pc += 3
+                    self.pc += 3
             elif opcode == 7:  # LESS THAN
-                a = get(l, pc + 1, modes[2], base)
-                b = get(l, pc + 2, modes[1], base)
-                address = get_address(l, pc + 3, modes[0], base)
+                a = get(self.memory, self.pc + 1, modes[2], self.base)
+                b = get(self.memory, self.pc + 2, modes[1], self.base)
+                address = get_address(self.memory, self.pc + 3, modes[0], self.base)
                 assert modes[0] != 1
                 if a < b:
-                    l[address] = 1
+                    self.memory[address] = 1
                 else:
-                    l[address] = 0
-                pc += 4
+                    self.memory[address] = 0
+                self.pc += 4
             elif opcode == 8:  # EQUAL
-                a = get(l, pc + 1, modes[2], base)
-                b = get(l, pc + 2, modes[1], base)
-                address = get_address(l, pc + 3, modes[0], base)
+                a = get(self.memory, self.pc + 1, modes[2], self.base)
+                b = get(self.memory, self.pc + 2, modes[1], self.base)
+                address = get_address(self.memory, self.pc + 3, modes[0], self.base)
                 assert modes[0] != 1
                 if a == b:
-                    l[address] = 1
+                    self.memory[address] = 1
                 else:
-                    l[address] = 0
-                pc += 4
+                    self.memory[address] = 0
+                self.pc += 4
             elif opcode == 9:  # BASE
-                a = get(l, pc + 1, modes[2], base)
-                base += a
-                pc += 2
+                a = get(self.memory, self.pc + 1, modes[2], self.base)
+                self.base += a
+                self.pc += 2
             elif opcode == 99:
                 print('halt')
                 break
