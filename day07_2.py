@@ -17,15 +17,14 @@ def thrusters(s):
             intcode.input(p[i])
 
         signal = 0
-        prev_signal = 0
         i = 0
         while True:
             intcodes[i % 5].input(signal)
-            signal = intcodes[i % 5].run()
-            if signal == 'halt':
-                best = max(best, prev_signal)
+            try:
+                signal = intcodes[i % 5].run()
+            except StopIteration:
+                best = max(best, signal)
                 break
-            prev_signal = signal
             i += 1
 
     return best

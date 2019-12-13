@@ -11,22 +11,21 @@ def run(s):
     directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
     panels = defaultdict(int)
     panels[x, y] = black
-
-    # loop
     intcode = Intcode(s)
+
     while True:
         inp = panels[x, y]
         intcode.input(inp)
-        result = intcode.run()
-        if result == 'halt':
-            break
-        panels[x, y] = result
 
-        result = intcode.run()
-        if result == 'halt':
+        try:
+            color = intcode.run()
+        except StopIteration:
             break
+        panels[x, y] = color
 
-        dir += -1 if result == 0 else 1
+        turn = intcode.run()
+
+        dir += -1 if turn == 0 else 1
         x += directions[dir % 4][0]
         y += directions[dir % 4][1]
 

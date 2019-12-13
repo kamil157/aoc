@@ -7,14 +7,11 @@ def intcode(s, input):
     i = Intcode(s)
     i.input(input)
 
-    prev_output = 0
     while True:
-        output = i.run()
-        if output == 'halt':
-            return prev_output
-        else:
-            prev_output = output
-            # print(output)
+        try:
+            output = i.run()
+        except StopIteration:
+            return output
 
 
 print(intcode(input_raw, 1))  # 9938601

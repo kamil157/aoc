@@ -8,11 +8,10 @@ def run(s, inp):
     intcode = Intcode(s)
     intcode.input(inp)
     while True:
-        output = intcode.run()
-        if output == 'halt':
+        try:
+            print(intcode.run())
+        except StopIteration:
             return
-        else:
-            print(output)
 
 
 

@@ -112,10 +112,11 @@ class Intcode:
                 self.base += a
                 self.pc += 2
             elif opcode == 99:
-                print('halt')
-                break
+                raise StopIteration
+                # print('halt')
+                # break
             else:
                 print(opcode)
                 assert False
 
-        return 'halt'
+        # return 'halt'
