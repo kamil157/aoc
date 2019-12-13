@@ -34,7 +34,7 @@ class Intcode:
     def run(self):
         while True:
             next_opcode = self.memory[self.get_address(1)]
-            # print('opcode', next_opcode)
+            # print(next_opcode)
             modes, opcode = split_opcode(next_opcode)
 
             # print(opcode)
