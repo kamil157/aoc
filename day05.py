@@ -14,5 +14,6 @@ def intcode(s, input):
             return output
 
 
-print(intcode(input_raw, 1))  # 9938601
-print(intcode(input_raw, 5))  # 4283952
+if __name__ == "__main__":
+    print(intcode(input_raw, 1))  # 9938601
+    print(intcode(input_raw, 5))  # 4283952

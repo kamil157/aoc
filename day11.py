@@ -32,4 +32,5 @@ def run(s):
     return len(panels)
 
 
-print(run(input_raw))  # 2255
+if __name__ == "__main__":
+    print(run(input_raw))  # 2255
