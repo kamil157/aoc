@@ -31,6 +31,10 @@ class Intcode:
     def input(self, user_input):
         self.inputs.append(user_input)
 
+    def replace_input(self, user_input):
+        self.inputs.clear()
+        self.inputs.append(user_input)
+
     def run(self):
         while True:
             next_opcode = self.memory[self.get_address(1)]
