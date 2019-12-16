@@ -1,5 +1,3 @@
-from collections import defaultdict
-
 input = """3 CFGBR, 9 PFMFC, 2 FQFPN => 2 PKPWN
 9 XQHK => 3 KDXDC
 9 MPQFZ, 6 SGHLD => 6 DXPTR
@@ -114,6 +112,7 @@ ex5 = """171 ORE => 8 CNZTR
 7 XCVML => 6 RJRHP
 5 BHXH, 4 VRPVC => 5 LTCX"""
 
+
 def factory(s, fuel):
     recipes = {}
     for recipe in s.splitlines():
@@ -134,10 +133,11 @@ def factory(s, fuel):
             crafts = max(current[i] // result_i, 1)
             current[i] -= result_i * crafts
 
-            for part_q, part_i in parts:                
+            for part_q, part_i in parts:
                 current[part_i] += part_q * crafts
-                
+
     return current['ORE']
+
 
 assert factory(ex1, 1) == 31
 assert factory(ex2, 1) == 165
@@ -145,6 +145,7 @@ assert factory(ex3, 1) == 13312
 assert factory(ex4, 1) == 180697
 assert factory(ex5, 1) == 2210736
 print(factory(input, 1))  # 273638
+
 
 def count_fuel(s, ore):
     lo = 1
