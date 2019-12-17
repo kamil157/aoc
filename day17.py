@@ -19,9 +19,6 @@ def alignment(s):
         if line:
             map.append(line)
 
-    for line in map:
-        print(''.join(line))
-
     result = 0
     for y, line in enumerate(map):
         for x, pixel in enumerate(line):
@@ -40,10 +37,48 @@ def alignment(s):
                 map[y][x] = 'O'
                 result += y * x
 
-    for line in map:
-        print(''.join(line))
+    # for line in map:
+    #     print(''.join(line))
 
     return result
 
 
-print(alignment(input))
+def send_command(intcode, command):
+    assert len(command) <= 20
+    for c in command:
+        intcode.input(ord(c))
+    intcode.input(ord('\n'))
+
+
+def walk(s):
+    # m = map(s)
+    intcode = Intcode(s)
+    intcode.memory[0] = 2
+
+    send_command(intcode, "A,B,A,C,B,C,B,C,A,C")  # main
+    send_command(intcode, "L,10,R,12,R,12")  # A
+    send_command(intcode, "R,6,R,10,L,10")  # B
+    send_command(intcode, "R,10,L,10,L,12,R,6")  # C
+    send_command(intcode, "n")  # video
+
+    map = []
+    while True:
+        try:
+            line = []
+            while True:
+                output = intcode.run()
+                if output > 255:
+                    return output
+                if output == ord('\n'):
+                    break
+                line.append(chr(output))
+        except StopIteration:
+            break
+        if line:
+            map.append(line)
+
+    for line in map:
+        print(''.join(line))
+    
+print(alignment(input))  # 3888
+print(walk(input))  # 927809
