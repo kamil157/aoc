@@ -11,7 +11,7 @@ def split_opcode(full_opcode):
 class Intcode:
     def __init__(self, s):
         self.memory = [int(n) for n in s.split(',')]
-        self.memory.extend([0] * 1000)
+        self.memory.extend([0] * 2000)
         self.pc = 0
         self.base = 0
         self.inputs = deque()
