@@ -118,7 +118,7 @@ ex5 = """########################
 
 def find_reachable_keys(map, pos):
     # find shortest path to all reachable keys
-    reachable_keys = set()
+    reachable_keys = {}
 
     q = collections.deque()
     q.append((pos, 0, ""))
@@ -135,7 +135,7 @@ def find_reachable_keys(map, pos):
         visited[y][x] = True
 
         if current.islower() and pos != (x, y):
-            reachable_keys.add((current, length, (x, y), doors))
+            reachable_keys[current] = (length, (x, y), doors)
 
         if current.isupper():
             doors += current
@@ -149,20 +149,25 @@ def find_reachable_keys(map, pos):
 cache = {}
 
 
-def dfs(map, node, path, results, paths): # do i need to remember visited?
+def dfs(map, node, path, length, results, paths): # do i need to remember visited?
+    if len(path) > 0:
+        prev = path[-1]
+    
+    if node != '@':
+        length += paths[prev][node][0] # todo
     path += node
 
     if len(path) == len(paths):
         # found all keys, done
-        results.append(path)
+        results[path] = length
     else:
         # check all unlocked paths
-        for key, _, _, doors in paths[node]:
+        for key, (_, _, doors) in paths[node].items():
             if key in path or any(door.lower() not in path for door in doors):
                 continue
 
-            print('from', node, 'to', key, 'doors:', doors, 'keys:', path[1:])
-            dfs(map, key, path, results, paths)
+            # print('from', node, 'to', key, 'doors:', doors, 'keys:', path[1:], 'length', length)
+            dfs(map, key, path, length, results, paths)
     return path
 
 
@@ -199,23 +204,14 @@ def collect_keys2(s):
     #     print(k, '=>', v)
     for key, (x, y) in keys.items():
         paths[key] = find_reachable_keys(map, (x, y))
-    for k, v in paths.items():
-        print(k, '=>', v)
+    # for k, v in paths.items():
+    #     print(k, '=>', v)
 
     # compute stuff
-    results = []
-    dfs(map, '@', '', results, paths)
+    results = {}
+    dfs(map, '@', '', 0, results, paths)
     # print(results)
-
-    best = 99999
-    for path in results:
-        length = 0
-        for i in range(len(path) - 1):
-            edges = paths[path[i]]
-            edge = next(e for e in edges if e[0] == path[i + 1])
-            length += edge[1]
-            # print(edge, length)
-        best = min(best, length)
+    best = min(results.values())
     print(best)
     return best
 
@@ -224,5 +220,5 @@ assert collect_keys2(ex1) == 8
 assert collect_keys2(ex2) == 86
 assert collect_keys2(ex3) == 132
 assert collect_keys2(ex5) == 81
-# assert collect_keys2(ex4) == 136
+assert collect_keys2(ex4) == 136
 # print(collect_keys2(input))
