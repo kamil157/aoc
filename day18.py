@@ -121,7 +121,7 @@ def find_reachable_keys(map, pos):
     reachable_keys = set()
 
     q = collections.deque()
-    q.append((pos, 0, set()))
+    q.append((pos, 0, ""))
 
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
     visited = [[False] * len(map[0]) for _ in range(len(map))]
@@ -135,36 +135,34 @@ def find_reachable_keys(map, pos):
         visited[y][x] = True
 
         if current.islower() and pos != (x, y):
-            reachable_keys.add((current, length, (x, y), frozenset(doors)))
+            reachable_keys.add((current, length, (x, y), doors))
 
         if current.isupper():
-            doors.add(current)
+            doors += current
 
         for d in directions:
             next_x, next_y = x + d[0], y + d[1]
-            q.append(((next_x, next_y), length + 1, doors.copy()))
+            q.append(((next_x, next_y), length + 1, doors))
     return reachable_keys
 
 
 cache = {}
 
 
-def dfs(map, node, path, keys, results, paths): # do i need to remember visited?
+def dfs(map, node, path, results, paths): # do i need to remember visited?
     path += node
-    if node != '@':        
-        keys.add(node)
 
-    if len(keys) == len(paths) - 1:
+    if len(path) == len(paths):
         # found all keys, done
         results.append(path)
     else:
         # check all unlocked paths
         for key, _, _, doors in paths[node]:
-            if key in keys or any(door.lower() not in keys for door in doors):
+            if key in path or any(door.lower() not in path for door in doors):
                 continue
 
-            print('from', node, 'to', key, 'through', doors, 'have keys', keys)
-            dfs(map, key, path, keys.copy(), results, paths)
+            print('from', node, 'to', key, 'doors:', doors, 'keys:', path[1:])
+            dfs(map, key, path, results, paths)
     return path
 
 
@@ -201,12 +199,12 @@ def collect_keys2(s):
     #     print(k, '=>', v)
     for key, (x, y) in keys.items():
         paths[key] = find_reachable_keys(map, (x, y))
-    # for k, v in paths.items():
-    #     print(k, '=>', v)
+    for k, v in paths.items():
+        print(k, '=>', v)
 
     # compute stuff
     results = []
-    dfs(map, '@', '', set(), results, paths)
+    dfs(map, '@', '', results, paths)
     # print(results)
 
     best = 99999
@@ -222,9 +220,9 @@ def collect_keys2(s):
     return best
 
 
-# assert collect_keys2(ex1) == 8
+assert collect_keys2(ex1) == 8
 assert collect_keys2(ex2) == 86
-# assert collect_keys2(ex3) == 132
-# assert collect_keys2(ex5) == 81
+assert collect_keys2(ex3) == 132
+assert collect_keys2(ex5) == 81
 # assert collect_keys2(ex4) == 136
 # print(collect_keys2(input))
