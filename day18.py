@@ -116,6 +116,64 @@ ex5 = """########################
 ########################"""
 
 
+def find_reachable_keys(map, pos, keys):
+    # find shortest path to all reachable keys
+    reachable_keys = []
+
+    q = collections.deque()
+    q.append((pos, 0, []))
+
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    visited = [[False] * len(map[0]) for _ in range(len(map))]
+
+    while q:
+        (x, y), length, path = q.popleft()
+        current = map[y][x]
+        if visited[y][x] or current == '#':
+            continue
+
+        # print('visiting:', x, y, current)
+        visited[y][x] = True
+
+        if current.islower():
+            if current not in keys:
+                reachable_keys.append((current, length, path, (x, y)))
+                print('found key!', current, length, (x, y))
+            # break
+
+        if current.isupper():
+            # print('found door', current, 'keys:', keys, 'have key?', current.lower() in keys)
+            if current.lower() not in keys:
+                continue
+
+        for d in directions:
+            next_x, next_y = x + d[0], y + d[1]
+            next_path = path.copy()
+            next_path.append(d)
+            q.append(((next_x, next_y), length + 1, next_path))
+    return reachable_keys
+
+
+def dfs(map, pos, path_length, keys, results):
+    reachable_keys = find_reachable_keys(map, pos, keys)
+    print('reachable', [key for key, _,_,_ in reachable_keys])
+
+    best_length = 999
+    if not reachable_keys:
+        print('total', path_length)
+        results.append(path_length)
+        return path_length
+    for key, length, path, pos in reachable_keys:
+        print('dfs', path_length, key, length, pos, keys)
+        next_keys = keys.copy()
+        next_keys.append(key)
+        dfs_length = dfs(map, pos, path_length + length, next_keys, results)
+        print(dfs_length)
+        current_length = path_length + dfs_length
+        # best_length = min(best_length, current_length)
+    return current_length
+
+
 def collect_keys(s):
     """
     find shortest path to all reachable keys
@@ -135,38 +193,11 @@ def collect_keys(s):
             if map[y][x] == '@':
                 pos = (x, y)
     print(s)
-    # find shortest path to all reachable keys
-    q = collections.deque()
-    q.append(pos)
-    visited = [[False] * len(map[0]) for _ in range(len(map))]
-    keys = []
 
-    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-    while q:
-        # print(q)
-        x, y = q.popleft()
-        current = map[y][x]
-        if visited[y][x] or current == '#':
-            continue
-
-        print('visiting:', x, y, current)
-        visited[y][x] = True
-
-        if current.islower():
-            keys.append(current)
-            print('found key!', keys)
-            break
-
-        if current.isupper():
-            print('found door', current, 'keys:', keys, 'have key?', current.lower() in keys)
-            if current.lower() not in keys:
-                continue
-
-        for d in directions:
-            next_x, next_y = x + d[0], y + d[1]
-            q.append((next_x, next_y))
-
-    return 0
+    results = []
+    dfs(map, pos, 0, [], results)
+    print(min(results))
+    return min(results)
 
 
 assert collect_keys(ex1) == 8
