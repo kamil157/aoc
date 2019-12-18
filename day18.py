@@ -153,19 +153,19 @@ def dfs(map, node, path, keys, results, paths): # do i need to remember visited?
     path += node
     if node != '@':        
         keys.add(node)
-    # found all keys
+
     if len(keys) == len(paths) - 1:
+        # found all keys, done
         results.append(path)
-        return path # total path from @ to node
+    else:
+        # check all unlocked paths
+        for key, _, _, doors in paths[node]:
+            if key in keys or any(door.lower() not in keys for door in doors):
+                continue
 
-    for key, _, _, doors in paths[node]:
-        if key in keys or any(door.lower() not in keys for door in doors):
-            continue
-
-        # print('from', node, 'to', key, 'through', doors, 'have keys', keys)
-        dfs_path = dfs(map, key, path, keys.copy(), results, paths)
-        # current_path = path + dfs_path
-    return path # what to return here? should i keep some min partial len too?
+            print('from', node, 'to', key, 'through', doors, 'have keys', keys)
+            dfs(map, key, path, keys.copy(), results, paths)
+    return path
 
 
 def collect_keys2(s):
@@ -222,9 +222,9 @@ def collect_keys2(s):
     return best
 
 
-assert collect_keys2(ex1) == 8
+# assert collect_keys2(ex1) == 8
 assert collect_keys2(ex2) == 86
-assert collect_keys2(ex3) == 132
-assert collect_keys2(ex5) == 81
-assert collect_keys2(ex4) == 136
+# assert collect_keys2(ex3) == 132
+# assert collect_keys2(ex5) == 81
+# assert collect_keys2(ex4) == 136
 # print(collect_keys2(input))
