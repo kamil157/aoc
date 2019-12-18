@@ -149,23 +149,23 @@ def find_reachable_keys(map, pos):
 cache = {}
 
 
-def dfs(map, node, path_length, keys, results, paths):
+def dfs(map, node, path, keys, results, paths): # do i need to remember visited?
+    path += node
+    if node != '@':        
+        keys.add(node)
+    # found all keys
     if len(keys) == len(paths) - 1:
-        results.append(path_length)
-        return path_length
+        results.append(path)
+        return path # total path from @ to node
 
-    for key, length, (x, y), doors in paths[node]:
+    for key, _, _, doors in paths[node]:
         if key in keys or any(door.lower() not in keys for door in doors):
             continue
 
-        print('from', node, 'to', key, 'through', doors, 'have keys', keys)
-        next_keys = keys.copy()
-        next_keys.add(key)
-        dfs_length = dfs(map, key, path_length + length, next_keys, results, paths)
-        if dfs_length == -1:
-            return -1
-        current_length = path_length + dfs_length
-    return current_length
+        # print('from', node, 'to', key, 'through', doors, 'have keys', keys)
+        dfs_path = dfs(map, key, path, keys.copy(), results, paths)
+        # current_path = path + dfs_path
+    return path # what to return here? should i keep some min partial len too?
 
 
 def collect_keys2(s):
@@ -180,7 +180,7 @@ def collect_keys2(s):
     return best total path length
     """
 
-    print(s)
+    # print(s)
 
     # find all key positions
     keys = {}
@@ -189,31 +189,42 @@ def collect_keys2(s):
         for x in range(len(map[y])):
             current = map[y][x]
             if current == '@':
-                pos = (x, y)
+                start = (x, y)
             if current.islower():
                 keys[current] = (x, y)
 
     # compute shortest paths between keys
     paths = {}
-    reachable_keys = find_reachable_keys(map, pos)
+    reachable_keys = find_reachable_keys(map, start)
     paths['@'] = reachable_keys
     # for k, v in paths.items():
     #     print(k, '=>', v)
     for key, (x, y) in keys.items():
         paths[key] = find_reachable_keys(map, (x, y))
-    for k, v in paths.items():
-        print(k, '=>', v)
+    # for k, v in paths.items():
+    #     print(k, '=>', v)
 
     # compute stuff
     results = []
-    dfs(map, '@', 0, set(), results, paths)
-    print(results)
-    return min(results)
+    dfs(map, '@', '', set(), results, paths)
+    # print(results)
+
+    best = 99999
+    for path in results:
+        length = 0
+        for i in range(len(path) - 1):
+            edges = paths[path[i]]
+            edge = next(e for e in edges if e[0] == path[i + 1])
+            length += edge[1]
+            # print(edge, length)
+        best = min(best, length)
+    print(best)
+    return best
 
 
 assert collect_keys2(ex1) == 8
 assert collect_keys2(ex2) == 86
 assert collect_keys2(ex3) == 132
+assert collect_keys2(ex5) == 81
 assert collect_keys2(ex4) == 136
-# assert collect_keys2(ex5) == 81
 # print(collect_keys2(input))
