@@ -150,25 +150,46 @@ cache = {}
 
 
 def dfs(map, node, path, length, results, paths): # do i need to remember visited?
+    # print(cache)
+    try:
+        cached = cache[(''.join(sorted(path)), node)]
+        print('hit: from path:', path, 'to node', node, 'subtree is', cached)
+        results[path + cached[0]] = cached[1] + length # unsort cached[0]
+        return cached
+    except KeyError:
+        pass
+
+    current_length = 0
     if len(path) > 0:
         prev = path[-1]
-    
-    if node != '@':
-        length += paths[prev][node][0] # todo
+        current_length = paths[prev][node][0]
+        length += current_length
     path += node
 
+    best_length = 99999
+    best_path = ''
     if len(path) == len(paths):
         # found all keys, done
         results[path] = length
+        return node, current_length
     else:
         # check all unlocked paths
         for key, (_, _, doors) in paths[node].items():
             if key in path or any(door.lower() not in path for door in doors):
                 continue
 
-            # print('from', node, 'to', key, 'doors:', doors, 'keys:', path[1:], 'length', length)
-            dfs(map, key, path, length, results, paths)
-    return path
+            print('from', node, 'to', key, 'doors:', doors, 'keys:', path[1:], 'length', length)
+            subtree_path, subtree_length = dfs(map, key, path, length, results, paths)
+            if subtree_length + current_length < best_length:
+                best_length = subtree_length + current_length
+                best_path = node + subtree_path
+            print('subtree:', subtree_path, subtree_length)
+
+    cache_key = (''.join(sorted(path[:-1])), node)
+    if cache_key not in cache or cache[cache_key][1] > best_length:
+        cache[cache_key] = (best_path, best_length)
+    print('best length of', best_path, '=', best_length)
+    return best_path, best_length
 
 
 def collect_keys2(s):
@@ -210,15 +231,15 @@ def collect_keys2(s):
     # compute stuff
     results = {}
     dfs(map, '@', '', 0, results, paths)
-    # print(results)
+    print(results)
     best = min(results.values())
     print(best)
     return best
 
 
-assert collect_keys2(ex1) == 8
-assert collect_keys2(ex2) == 86
+# assert collect_keys2(ex1) == 8
+# assert collect_keys2(ex2) == 86
 assert collect_keys2(ex3) == 132
-assert collect_keys2(ex5) == 81
-assert collect_keys2(ex4) == 136
+# assert collect_keys2(ex5) == 81
+# assert collect_keys2(ex4) == 136
 # print(collect_keys2(input))
