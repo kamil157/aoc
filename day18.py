@@ -171,23 +171,21 @@ class MazeSolver:
             length += current_length
         path += node
 
-        best_length = 99999
-        best_path = ''
+        subtrees = []
         if len(path) == len(self.paths):
             # found all keys, done
             self.results[path] = length
             return node, current_length
         else:
-            # check all unlocked paths
+            # check all unlocked paths to other keys
             for key, (_, _, doors) in self.paths[node].items():
                 if key in path or any(door.lower() not in path for door in doors):
                     continue
 
                 subtree_path, subtree_length = self.dfs(key, path, length)
-                if subtree_length + current_length < best_length:
-                    best_length = subtree_length + current_length
-                    best_path = node + subtree_path
+                subtrees.append((node + subtree_path, subtree_length + current_length))
 
+        best_path, best_length = min(subtrees, key=lambda s: s[1])
         if len(path) > 1:
             cache_key = (''.join(sorted(path[:-1])), path[-2], node)
             self.cache[cache_key] = (best_path, best_length)
