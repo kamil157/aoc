@@ -11,7 +11,24 @@ def send_command(intcode, command):
 def spring(s):
     intcode = Intcode(s)
     commands = [
-        "NOT A J", 
+        "NOT A J",
+        # "AND T J",
+        "NOT B T",
+        "AND T J",
+        "NOT C T",
+
+        "AND T J",
+
+        # not b and not c
+        "NOT B T",
+        "OR T J",
+        "NOT C T",
+        "AND T J",
+        
+        # or not a
+        "NOT A T",
+        "OR T J",
+
         "WALK"
     ]
 
