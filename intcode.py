@@ -41,7 +41,7 @@ class Intcode:
             # print(next_opcode)
             modes, opcode = split_opcode(next_opcode)
 
-            # print(opcode)
+            print(opcode)
 
             if opcode == 1:  # ADD
                 a = self.memory[self.get_address(modes[2])]
@@ -57,7 +57,10 @@ class Intcode:
                 self.memory[address] = a * b
             elif opcode == 3:  # INPUT
                 address = self.get_address(modes[2])
-                self.memory[address] = self.inputs.popleft()
+                try:
+                    self.memory[address] = self.inputs.popleft()
+                except IndexError:
+                    self.memory[address] = -1
             elif opcode == 4:  # OUTPUT
                 output = self.memory[self.get_address(modes[2])]
                 # print(output)

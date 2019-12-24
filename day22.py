@@ -122,9 +122,8 @@ deal with increment 9
 deal with increment 3
 cut -1"""
 
-def shuffle(s, n):
+def shuffle_deck(s, deck):
     commands = s.splitlines()
-    deck = list(range(n))
 
     for command in commands:
         if command == 'deal into new stack':
@@ -138,12 +137,42 @@ def shuffle(s, n):
             for i in range(len(deck)):
                 new_deck[(i *  increment) % len(deck)] = deck[i]
             deck = new_deck
+        print(deck, 'after', command)
 
     return deck
 
 
+def shuffle(s, n):
+    return shuffle_deck(s, list(range(n)))
+    
+
 assert (shuffle(ex1, 10)) == [0, 3, 6, 9, 2, 5, 8, 1, 4, 7]
-assert (shuffle(ex2, 10)) == [3, 0, 7, 4, 1, 8, 5, 2, 9, 6]
-assert (shuffle(ex3, 10)) == [6, 3, 0, 7, 4, 1, 8, 5, 2, 9]
-assert (shuffle(ex4, 10)) == [9, 2, 5, 8, 1, 4, 7, 0, 3, 6]
-print(shuffle(input, 10007).index(2019))
+# assert (shuffle(ex2, 10)) == [3, 0, 7, 4, 1, 8, 5, 2, 9, 6]
+# assert (shuffle(ex3, 10)) == [6, 3, 0, 7, 4, 1, 8, 5, 2, 9]
+# assert (shuffle(ex4, 10)) == [9, 2, 5, 8, 1, 4, 7, 0, 3, 6]
+# print(shuffle(input, 10007).index(2019))  # 5540
+# print(shuffle(input, 10007)[2020])
+
+
+def shuffle_smart(s, n, pos):
+    commands = reversed(s.splitlines())
+    for command in commands:
+        print(pos, 'before', command)
+        if command == 'deal into new stack':
+            pos = -pos  
+        elif command.startswith('cut '):
+            split = int(command.replace('cut ', ''))
+            pos = (pos + split) % n
+            # deck = deck[split:] + deck[:split]
+        elif command.startswith('deal with increment '):
+            increment = int(command.replace('deal with increment ', ''))
+            pos = (increment * pos) % n
+            # new_deck = deck.copy()
+            # for i in range(len(deck)):
+            #     new_deck[(i *  increment) % len(deck)] = deck[i]
+            # deck = new_deck
+    return pos
+
+print(shuffle_smart(ex1, 10, 1))
+# print(shuffle_smart(input, 10007, 2020))
+# print(shuffle_smart(input, 119315717514047, 2020))
