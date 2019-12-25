@@ -41,8 +41,6 @@ class Intcode:
             # print(next_opcode)
             modes, opcode = split_opcode(next_opcode)
 
-            print(opcode)
-
             if opcode == 1:  # ADD
                 a = self.memory[self.get_address(modes[2])]
                 b = self.memory[self.get_address(modes[1])]
