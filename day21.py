@@ -8,29 +8,8 @@ def send_command(intcode, command):
         intcode.input(ord(c))
     intcode.input(ord('\n'))
 
-def spring(s):
+def spring(s, commands):
     intcode = Intcode(s)
-    commands = [
-        "NOT A J",
-        # "AND T J",
-        "NOT B T",
-        "AND T J",
-        "NOT C T",
-
-        "AND T J",
-
-        # not b and not c
-        "NOT B T",
-        "OR T J",
-        "NOT C T",
-        "AND T J",
-        
-        # or not a
-        "NOT A T",
-        "OR T J",
-
-        "WALK"
-    ]
 
     for command in commands:
         send_command(intcode, command)
@@ -54,4 +33,29 @@ def spring(s):
     for line in map:
         print(''.join(line))
 
-print(spring(input))
+print(spring(input, 
+    [
+        "NOT A J",
+        "NOT B T",
+        "OR T J",
+        "NOT C T",
+        "OR T J",
+        "AND D J",
+        "WALK"
+    ]))
+
+print(spring(input, 
+    [
+        "NOT A J",
+        "NOT B T",
+        "OR T J",
+        "NOT C T",
+        "OR T J",
+        "AND D J",
+
+        "NOT E T",
+        "NOT T T",
+        "OR H T",
+        "AND T J",
+        "RUN"
+    ]))
