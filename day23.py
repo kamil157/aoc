@@ -12,31 +12,18 @@ def network(s):
 
     while True:
         for i in range(50):
-            print(i)
             intcode = intcodes[i]
-
-        
-            # try:
-            #     x, y = packets[i].popleft()
-            #     intcode.input(x)
-            #     intcode.input(y)
-            # except:
-            #     intcode.input(-1)
-
-            
-            # send
             dest = intcode.run()
             x = intcode.run()
             y = intcode.run()
             if dest == 255:
                 return y
-            packets[dest].append((x, y))
-            print(dest, x, y)
+            if dest is not None:
+                packets[dest].append((x, y))
+                print(i, dest, x, y)
 
-            intcodes[dest].input(x)
-            intcodes[dest].input(y)
-
-            
+                intcodes[dest].input(x)
+                intcodes[dest].input(y)
 
 
 print(network(input))

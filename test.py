@@ -31,7 +31,7 @@ def tryprog(prog, pc=0, name=''):
         #print(name,pc)
         op, vals, locs = parse()
         #print(name,opc,op)
-        print(op)
+        # print(op)
         if op == 1:
             prog[locs[2]] = vals[0] + vals[1]
         elif op == 2:
@@ -89,21 +89,24 @@ with open('input.txt') as f:
             nat = None
         for i in range(50):
             t = ps[i].send(ns[i])
+            
             if type(t) == tuple:
+                
                 # input
                 if qs[i]:
                     x, y = qs[i][0]
                     del qs[i][0]
                     ps[i].send(x)
                     ns[i] = y
-                    print('input', ns[i])
+                    # print('input', ns[i])
                 else:
                     ns[i] = -1                
             else:
+                # print(t)
                 add = t
                 x = ps[i].send(None)
                 y = ps[i].send(None)
-                print('recv', add, x, y)
+                print(add, x, y)
                 if add == 255:
                     if part1:
                         print(y)

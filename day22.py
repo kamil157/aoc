@@ -137,7 +137,6 @@ def shuffle_deck(s, deck):
             for i in range(len(deck)):
                 new_deck[(i *  increment) % len(deck)] = deck[i]
             deck = new_deck
-        print(deck, 'after', command)
 
     return deck
 
@@ -147,32 +146,38 @@ def shuffle(s, n):
     
 
 assert (shuffle(ex1, 10)) == [0, 3, 6, 9, 2, 5, 8, 1, 4, 7]
-# assert (shuffle(ex2, 10)) == [3, 0, 7, 4, 1, 8, 5, 2, 9, 6]
-# assert (shuffle(ex3, 10)) == [6, 3, 0, 7, 4, 1, 8, 5, 2, 9]
-# assert (shuffle(ex4, 10)) == [9, 2, 5, 8, 1, 4, 7, 0, 3, 6]
-# print(shuffle(input, 10007).index(2019))  # 5540
-# print(shuffle(input, 10007)[2020])
+assert (shuffle(ex2, 10)) == [3, 0, 7, 4, 1, 8, 5, 2, 9, 6]
+assert (shuffle(ex3, 10)) == [6, 3, 0, 7, 4, 1, 8, 5, 2, 9]
+assert (shuffle(ex4, 10)) == [9, 2, 5, 8, 1, 4, 7, 0, 3, 6]
+print(shuffle(input, 10007).index(2019))  # 5540
 
 
-def shuffle_smart(s, n, pos):
-    commands = reversed(s.splitlines())
+def inv(n, m):
+    return pow(n, m - 2, m)
+
+
+def shuffle_smart(s, m, iterations, pos):
+    commands = s.splitlines()
+    offset = 0
+    increment = 1
     for command in commands:
-        print(pos, 'before', command)
         if command == 'deal into new stack':
-            pos = -pos  
+            increment *= -1        
+            increment %= m    
+            offset += increment
+            offset %= m
         elif command.startswith('cut '):
-            split = int(command.replace('cut ', ''))
-            pos = (pos + split) % n
-            # deck = deck[split:] + deck[:split]
+            n = int(command.replace('cut ', ''))
+            offset += increment * n
+            offset %= m
         elif command.startswith('deal with increment '):
-            increment = int(command.replace('deal with increment ', ''))
-            pos = (increment * pos) % n
-            # new_deck = deck.copy()
-            # for i in range(len(deck)):
-            #     new_deck[(i *  increment) % len(deck)] = deck[i]
-            # deck = new_deck
-    return pos
+            n = int(command.replace('deal with increment ', ''))
+            increment *= inv(n, m)
+            increment %= m    
 
-print(shuffle_smart(ex1, 10, 1))
-# print(shuffle_smart(input, 10007, 2020))
-# print(shuffle_smart(input, 119315717514047, 2020))
+    total_increment = pow(increment, iterations, m)
+    total_offset = offset * (1 - total_increment) * inv((1 - increment), m) % m
+    return (total_offset + total_increment * pos) % m
+
+
+print(shuffle_smart(input, 119315717514047, 101741582076661, 2020))
