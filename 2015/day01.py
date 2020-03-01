@@ -6,7 +6,7 @@ def part1(s):
 def part2(s):
     floor = 0
     for i, c in enumerate(s, 1):
-        floor += 1 if c == '(' else - 1
+        floor += 1 if c == '(' else -1
         if floor == -1:
             return i
 
