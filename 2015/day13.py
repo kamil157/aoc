@@ -16,8 +16,10 @@ def make_graph(s):
 def happiness(graph, p):
     happiness = 0
     for i in range(len(p)):
-        happiness += graph[p[i]][p[(i + 1) % len(p)]]
-        happiness += graph[p[(i + 1) % len(p)]][p[i]]
+        p1 = p[i]
+        p2 = p[(i + 1) % len(p)]
+        happiness += graph[p1][p2]
+        happiness += graph[p2][p1]
 
     return happiness
 
