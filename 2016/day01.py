@@ -18,7 +18,7 @@ def part1(s):
         facingIdx %= len(directions)
         
         dist = int(line[1:])
-        for d in range(dist):
+        for _ in range(dist):
             pos[0] += directions[facingIdx][0]
             pos[1] += directions[facingIdx][1]
             if tuple(pos) in visited and first is None:
