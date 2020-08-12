@@ -2,15 +2,15 @@ from hashlib import md5
 
 input = 'ffykfhsq'
 
-def hash(index):
-    s = input + str(index)
+def hash(s, index):
+    s = s + str(index)
     return md5(s.encode()).hexdigest()
 
 def part1(s):
     password = ''
     index = 0
     while len(password) < 8:
-        h = hash(index)
+        h = hash(s, index)
         if h[:5] == '00000':
             password += h[5]
         index += 1
@@ -20,7 +20,7 @@ def part2(s):
     password = ['*' for _ in range(8)]
     index = 0
     while '*' in password:
-        h = hash(index)
+        h = hash(s, index)
         # if (index % 30000 == 0):
             # print(''.join(password), hash, end='\r')
         try:

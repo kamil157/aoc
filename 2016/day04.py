@@ -12,7 +12,7 @@ def rotate(s, n):
     return s.translate(table)
 
 def part1(s):
-    lines = re.findall(r'([-a-z]+)-(\d+)\[(\w+)\]', input)
+    lines = re.findall(r'([-a-z]+)-(\d+)\[(\w+)\]', s)
     total = 0
     for encrypted, sector, expected in lines:
         name = encrypted.replace('-', '')

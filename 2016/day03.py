@@ -7,11 +7,11 @@ def count_real(triangles):
     return sum(1 for a, b, c in triangles if is_triangle(a, b, c))
 
 def part1(s):
-    triangles = [[int(n) for n in line.split()] for line in input]
+    triangles = [[int(n) for n in line.split()] for line in s]
     return count_real(triangles)
 
 def part2(s):
-    triangle_edges = [[int(n) for n in line.split()] for line in input]
+    triangle_edges = [[int(n) for n in line.split()] for line in s]
 
     triangles = []
     for i in range(0, len(triangle_edges), 3):

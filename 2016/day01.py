@@ -9,7 +9,7 @@ def part1(s):
     visited = set()
     first = None
 
-    for line in input.split(', '):
+    for line in s.split(', '):
         dir = line[0]
         if dir == 'L':
             facingIdx -= 1

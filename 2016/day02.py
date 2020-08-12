@@ -33,7 +33,7 @@ pos2 = [0, 2]
 def part1(s, keypad, pos):
     directions = { 'L': [-1, 0], 'R': [1, 0], 'U': [0, -1], 'D': [0, 1] }
     result = ''
-    for line in input.split():
+    for line in s.split():
         for dir in line:
             x = directions[dir][0] + pos[0]
             y = directions[dir][1] + pos[1]
