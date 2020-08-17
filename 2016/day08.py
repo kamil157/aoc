@@ -16,22 +16,19 @@ def part1(s):
     screen = [[' ' for _ in range(50)] for _ in range(6)]
 
     for line in s:
-        if line.startswith('rect'):
-            m = re.search(r'rect (\d+)x(\d+)', line)
+        if m := re.search(r'rect (\d+)x(\d+)', line):
             w = int(m.group(1))
             h = int(m.group(2))
             for x in range(w):
                 for y in range(h):
                     screen[y][x] = '#'
 
-        elif line.startswith('rotate row'):
-            m = re.search(r'rotate row y=(\d+) by (\d+)', line)
+        elif m := re.search(r'rotate row y=(\d+) by (\d+)', line):
             y = int(m.group(1))
             by = int(m.group(2))
             rotate_row(screen, y, by)
 
-        elif line.startswith('rotate column'):
-            m = re.search(r'rotate column x=(\d+) by (\d+)', line)
+        elif m := re.search(r'rotate column x=(\d+) by (\d+)', line):
             x = int(m.group(1))
             by = int(m.group(2))
             screen = transpose(screen)
