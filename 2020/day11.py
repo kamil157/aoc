@@ -5,12 +5,12 @@ input = open('2020/inputs/day11.txt').readlines()
 directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
 
 def in_range(i, j, seats):
-    return 0 <= i < len(seats) and 0 <= j < len(seats[0])
+    return i in range(len(seats)) and j in range(len(seats[0]))
 
 def neighbors1(seats, i, j):
     count = 0
     for di, dj in directions:
-        if in_range(i + di, j + dj, seats) and seats[i + di][j + dj] == '#':
+        if i + di in range(len(seats)) and j + dj in range(len(seats[0])) and seats[i + di][j + dj] == '#':
             count += 1
     return count
 
@@ -18,7 +18,7 @@ def neighbors2(seats, i, j):
     count = 0
     for di, dj in directions:
         distance = 1
-        while in_range(i + distance * di, j + distance * dj, seats):
+        while i + distance * di in range(len(seats)) and j + distance * dj in range(len(seats[0])):
             neighbor = seats[i + distance * di][j + distance * dj]
             if neighbor == '#':
                 count += 1
