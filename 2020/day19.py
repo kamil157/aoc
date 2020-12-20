@@ -24,10 +24,7 @@ def part1(s, part2):
 
 
     regex = d[0].replace('"', '').replace(' ', '')
-    regex = f'^{regex}$'
-
-    return len([message for message in messages.splitlines() if re.search(regex, message)])
-
+    return len([message for message in messages.splitlines() if re.fullmatch(regex, message)])
 
 
 print(part1(input, False))
