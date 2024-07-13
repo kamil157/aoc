@@ -1,21 +1,36 @@
-from re import findall
+from operator import and_, lshift, or_, rshift
 
-input = open('2015/inputs/day07.txt').read()
+with open('2015/inputs/day07.txt', encoding="utf-8") as f:
+    lines = f.read().strip().split('\n')
 
 
-def part1(s):
-    gates = findall(r'(\w+) (AND|LSHIFT|OR|RSHIFT) (\w+) -> (\w+)', s)
-    nots = findall(r'NOT (\w+) -> (\w+)', s)
-    direct = findall(r'\n(\w+) -> (\w+)', s)
+def part1(values):
+    def value(s):
+        op = s.split(" ")
+        if len(op) == 1:
+            return values[s] if s in values else int(s)
+        if len(op) == 2 and op[0] == "NOT":
+            values[right] = value(op[1]) ^ 0xFFFF
+        if len(op) == 3:
+            for name, fn in operators.items():
+                if op[1] == name:
+                    values[right] = fn(value(op[0]), value(op[2]))
+        raise ValueError
 
-    for _ in range(10):
-        for a, result in direct:
-            print(f'{a} -> {result}')
+    operators = {"AND": and_, "OR": or_, "LSHIFT": lshift, "RSHIFT": rshift}
 
-        for a, result in nots:
-            print(f'NOT {a} -> {result}')
+    while "a" not in values:
+        for line in lines:
+            left, right = line.split(" -> ")
+            if right not in values:
+                try:
+                    values[right] = value(left)
+                except ValueError:
+                    continue
 
-        for a, opcode, b, result in gates:
-            print(f'{a} {opcode} {b} -> {result}')
+    return values["a"]
 
-print(part1(input))
+
+result = part1({})
+print(result)
+print(part1({"b": result}))
