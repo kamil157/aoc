@@ -4,6 +4,7 @@ from math import prod
 
 input = 36000000
 
+
 def prime_factors(n):
     i = 2
     while i * i <= n:
@@ -15,6 +16,7 @@ def prime_factors(n):
 
     if n > 1:
         yield n
+
 
 def get_divisors(n):
     pf = prime_factors(n)
@@ -29,33 +31,27 @@ def get_divisors(n):
     for prime_power_combo in itertools.product(*powers):
         yield prod(prime_power_combo)
 
+
 def part1(n):
     for i in itertools.count():
         presents = 10 * sum(get_divisors(i))
         if presents >= n:
-            print(i, presents)
             return i
 
-elf_count = 5000
 
-def part2(n):
-    presents = [0] * elf_count
-    for elf in range(1, elf_count):
-        delivered = 0
-        for house in range(1, len(presents)):
-            if delivered == 50:
-                break
-            if house % elf == 0:
-                delivered += 1
-                presents[house] += 11 * elf
-                if presents[house] >= n:
-                    print(house, presents[house])
+print(part1(input))
 
 
-    for i, p in enumerate(presents):
-        if p >= n:
-            print(i, p)
-            return i
+def part2():
+    best = input
+    presents = collections.defaultdict(int)
+    for elf in range(input // 11):
+        for i in range(1, 51):
+            presents[elf * i] += 11 * elf
+            if presents[elf * i] >= input and elf * i < best:
+                best = elf * i
 
-# print(part1(input))
-print(part2(50000))
+    return best
+
+
+print(part2())
