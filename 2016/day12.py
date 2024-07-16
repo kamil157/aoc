@@ -1,35 +1,33 @@
-import re
+with open('2016/inputs/day23.txt', encoding="utf-8") as f:
+    lines = f.read().strip().split("\n")
 
-input = open('2016/inputs/day12.txt').read()
 
-def part1(s, c):
-    registers = { 'a': 0, 'b': 0, 'c': c, 'd': 0 }
-    instructions = s.split('\n')
-    i = 0
+def part1(c):
+    registers = {'a': 0, 'b': 0, 'c': c, 'd': 0}
+    instructions = [line.split() for line in lines]
 
-    while i < len(instructions):
-        line = instructions[i]
+    def value(n):
+        if n in registers:
+            return registers[n]
+        return int(n)
 
-        if m := re.search(r'cpy (-?\d+|[a-d]) ([a-d])', line):
-            x = m.group(1)
-            y = m.group(2)
-            registers[y] = registers[x] if x in registers else int(x)
-        
-        elif m := re.search(r'(inc|dec) ([a-d])', line):
-            op = m.group(1)
-            x = m.group(2)
-            registers[x] += 1 if op == 'inc' else -1
-
-        elif m := re.search(r'jnz (-?\d+|[a-d]) (-?\d+)', line):
-            x = m.group(1)
-            y = int(m.group(2))
-            if registers[x] if x in registers else int(x) != 0:
-                i += y
+    pc = 0
+    while pc < len(instructions):
+        l = instructions[pc]
+        if l[0] == "cpy":
+            registers[l[2]] = value(l[1])
+        elif l[0] == "inc":
+            registers[l[1]] += 1
+        elif l[0] == "dec":
+            registers[l[1]] -= 1
+        elif l[0] == "jnz":
+            if value(l[1]) != 0:
+                pc += value(l[2])
                 continue
-        
-        i += 1           
+        pc += 1
 
     return registers['a']
 
-print(part1(input, 0))
-print(part1(input, 1))
+
+print(part1(0))
+print(part1(1))
