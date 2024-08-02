@@ -35,8 +35,11 @@ class Intcode:
         self.inputs.clear()
         self.inputs.append(user_input)
 
-    def run(self):
+    def run(self, timeout=0):
+        t = 0
         while True:
+            if timeout and t > timeout:
+                return
             next_opcode = self.memory[self.get_address(1)]
             # print(next_opcode)
             modes, opcode = split_opcode(next_opcode)
@@ -99,3 +102,4 @@ class Intcode:
             else:
                 print(opcode)
                 assert False
+            t += 1
