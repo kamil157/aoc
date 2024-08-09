@@ -28,13 +28,20 @@ def neighbors(y, x):
     return valid
 
 
+def border(y, x):
+    result = "|LJ"
+    if (y - 1, x) in neighbors(y, x):
+        result += "S"
+    return result
+
+
 def part1():
-    queue = deque()
     for y, line in enumerate(lines):
         for x, tile in enumerate(line):
             if tile == 'S':
-                queue.append((y, x, 0))
+                start = (y, x)
 
+    queue = deque([(*start, 0)])
     distances = {}
     while queue:
         y, x, dist = queue.popleft()
@@ -44,7 +51,17 @@ def part1():
             if neighbor not in distances:
                 queue.append((*(neighbor), dist + 1))
 
-    return max(distances.values())
+    borders = border(*start)
+    count = 0
+    for y, line in enumerate(lines):
+        inside = False
+        for x, tile in enumerate(line):
+            if (y, x) in distances and tile in borders:
+                inside = not inside
+            if (y, x) not in distances and inside:
+                count += 1
+
+    return max(distances.values()), count
 
 
 print(part1())
