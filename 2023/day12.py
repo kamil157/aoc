@@ -1,35 +1,36 @@
-with open('2023/inputs/day12.txt') as f:
+from functools import cache
+
+
+with open('2023/inputs/day12.txt', encoding="utf-8") as f:
     lines = f.read().strip().split('\n')
 
 
-def generate(springs):
-    result = []
-    for a in springs:
-        if "?" in a:
-            arrangement1 = a.replace("?", "#", 1)
-            arrangement2 = a.replace("?", ".", 1)
-            result.append(arrangement1)
-            result.append(arrangement2)
-        else:
-            result.append(a)
-    if len(result) == len(springs):
-        return result
-    return generate(result)
-
-
-def part1():
+def part1(mul):
     total = 0
     for line in lines:
-        [springs, sizes] = line.split()
-        sizes = [int(n) for n in sizes.split(",")]
+        springs, sizes = line.split()
+        springs += "?"
+        springs *= mul
+        sizes = [int(n) for n in sizes.split(",")] * mul
 
-        for arrangement in generate([springs]):
-            match_sizes = [len(s)
-                           for s in arrangement.split(".") if len(s) > 0]
-            if match_sizes == sizes:
-                total += 1
+        @cache
+        def count(p, s, result=0):
+            if p == len(springs):
+                return s == len(sizes)
 
+            if springs[p] in ".?":
+                result += count(p+1, s)
+
+            if s < len(sizes):
+                end = p + sizes[s]
+                if end < len(springs) and "." not in springs[p:end] and springs[end] != "#":
+                    result += count(end + 1, s + 1)
+
+            return result
+
+        total += count(0, 0)
     return total
 
 
-print(part1())
+print(part1(1))
+print(part1(5))
