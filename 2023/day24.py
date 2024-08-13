@@ -1,3 +1,4 @@
+import z3
 from parse import parse
 
 with open('2023/inputs/day24.txt', encoding="utf-8") as f:
@@ -39,3 +40,18 @@ def part1():
 
 
 print(part1())
+
+
+def part2():
+    s = z3.Solver()
+    rock = z3.RealVector("rock", 6)
+    t = z3.RealVector("t", len(lines))
+    for i, line in enumerate(lines):
+        hail = parse("{:d}, {:d}, {:d} @ {:d}, {:d}, {:d}", line)
+        for d in range(3):
+            s.add(rock[d] + rock[d+3] * t[i] == hail[d] + hail[d+3] * t[i])
+    s.check()
+    return s.model().eval(sum(rock[:3]))
+
+
+print(part2())
