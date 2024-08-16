@@ -1,8 +1,6 @@
-input = """.#.##
-.#.#.
-##?#.
-####.
-#.###"""
+with open('2019/inputs/day24_2.txt', encoding="utf-8") as f:
+    input = f.read()
+
 
 ex1 = """....#
 #..#.
@@ -15,7 +13,8 @@ def count_adjacent(levels, level, l, row, y, x):
     adjacent_bugs = 0
     for d in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
         neighbor = (y + d[0], x + d[1])
-        is_inside = 0 <= neighbor[0] < len(level) and 0 <= neighbor[1] < len(row)
+        is_inside = 0 <= neighbor[0] < len(
+            level) and 0 <= neighbor[1] < len(row)
         if is_inside:
             neighbor_tile = level[neighbor[0]][neighbor[1]]
             if neighbor_tile == '#':
@@ -24,13 +23,17 @@ def count_adjacent(levels, level, l, row, y, x):
                 # check inner level
                 inner = levels[l + 1]
                 if (y, x) == (2, 1):
-                    adj = sum(1 for neighbor_tile in list(zip(*inner))[0] if neighbor_tile == '#')
+                    adj = sum(1 for neighbor_tile in list(
+                        zip(*inner))[0] if neighbor_tile == '#')
                 elif (y, x) == (2, 3):
-                    adj = sum(1 for neighbor_tile in list(zip(*inner))[4] if neighbor_tile == '#')
+                    adj = sum(1 for neighbor_tile in list(
+                        zip(*inner))[4] if neighbor_tile == '#')
                 elif (y, x) == (1, 2):
-                    adj = sum(1 for neighbor_tile in inner[0] if neighbor_tile == '#')
+                    adj = sum(
+                        1 for neighbor_tile in inner[0] if neighbor_tile == '#')
                 elif (y, x) == (3, 2):
-                    adj = sum(1 for neighbor_tile in inner[4] if neighbor_tile == '#')
+                    adj = sum(
+                        1 for neighbor_tile in inner[4] if neighbor_tile == '#')
                 else:
                     assert False
                 adjacent_bugs += adj

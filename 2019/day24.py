@@ -1,8 +1,6 @@
-input = """.#.##
-.#.#.
-##.#.
-####.
-#.###"""
+with open('2019/inputs/day24.txt', encoding="utf-8") as f:
+    input = f.read()
+
 
 ex1 = """....#
 #..#.
@@ -38,7 +36,8 @@ def bugs(s):
         state_str = ''.join(state)
         if state_str in history:
             print(state)
-            diversity = sum([2 ** i for i, tile in enumerate(state_str) if tile == '#'])
+            diversity = sum(
+                [2 ** i for i, tile in enumerate(state_str) if tile == '#'])
             return diversity
         state = new_state
         history.add(state_str)

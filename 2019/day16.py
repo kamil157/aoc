@@ -1,6 +1,7 @@
 from itertools import *
 
-input = "59713137269801099632654181286233935219811755500455380934770765569131734596763695509279561685788856471420060118738307712184666979727705799202164390635688439701763288535574113283975613430058332890215685102656193056939765590473237031584326028162831872694742473094498692690926378560215065112055277042957192884484736885085776095601258138827407479864966595805684283736114104361200511149403415264005242802552220930514486188661282691447267079869746222193563352374541269431531666903127492467446100184447658357579189070698707540721959527692466414290626633017164810627099243281653139996025661993610763947987942741831185002756364249992028050315704531567916821944"
+with open('2019/inputs/day16.txt') as f:
+    input = f.read()
 
 
 def fft(s, phases):
@@ -10,8 +11,10 @@ def fft(s, phases):
     for _ in range(phases):
         new_digits = []
         for i in range(len(digits)):
-            pattern_for_digit = list(chain.from_iterable([repeat(pattern[j], i + 1) for j in range(len(pattern))]))
-            factors = list(islice(chain.from_iterable(repeat(pattern_for_digit)), 1, len(s) + 1))
+            pattern_for_digit = list(chain.from_iterable(
+                [repeat(pattern[j], i + 1) for j in range(len(pattern))]))
+            factors = list(islice(chain.from_iterable(
+                repeat(pattern_for_digit)), 1, len(s) + 1))
             product = sum(digits[j] * factors[j] for j in range(len(digits)))
             new_digits.append(abs(product) % 10)
         digits = new_digits

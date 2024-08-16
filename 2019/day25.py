@@ -8,6 +8,7 @@ def send_command(intcode, command):
         intcode.input(ord(c))
     intcode.input(ord('\n'))
 
+
 def game(s):
     intcode = Intcode(s)
     commands = [
