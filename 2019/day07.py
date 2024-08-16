@@ -6,7 +6,7 @@ with open('2019/inputs/day07.txt') as f:
     input = f.read()
 
 
-def thrusters(s):
+def part1(s):
     perm = itertools.permutations(range(5))
     best = 0
 
@@ -19,18 +19,36 @@ def thrusters(s):
             intcode.input(phase)
             intcode.input(inout)
             inout = intcode.run()
-            # print(phase, inout)
 
         best = max(best, inout)
-    # print(best)
+
     return best
 
 
-if __name__ == "__main__":
-    assert thrusters('3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0') == 43210
-    assert thrusters(
-        '3,23,3,24,1002,24,10,24,1002,23,-1,23,101,5,23,23,1,24,23,23,4,23,99,0,0') == 54321
-    assert thrusters(
-        '3,31,3,32,1002,32,10,32,1001,31,-2,31,1007,31,0,33,1002,33,7,33,1,33,31,31,1,32,31,31,4,31,99,0,0,0') == 65210
+def part2(s):
+    perm = itertools.permutations(range(5, 10))
+    best = 0
 
-    print(thrusters(input))  # 99376
+    for p in perm:
+        intcodes = []
+        for i in range(5):
+            intcode = Intcode(s)
+            intcodes.append(intcode)
+            intcode.input(p[i])
+
+        signal = 0
+        i = 0
+        while True:
+            intcodes[i % 5].input(signal)
+            try:
+                signal = intcodes[i % 5].run()
+            except StopIteration:
+                best = max(best, signal)
+                break
+            i += 1
+
+    return best
+
+
+print(part1(input))
+print(part2(input))

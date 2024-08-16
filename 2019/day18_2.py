@@ -1,7 +1,7 @@
 from collections import deque
 
 
-with open('2019/inputs/day18.txt', encoding="utf-8") as f:
+with open('2019/inputs/day18_2.txt', encoding="utf-8") as f:
     lines = f.read().splitlines()
 
 

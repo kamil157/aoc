@@ -1,4 +1,4 @@
-with open('2019/inputs/day24.txt', encoding="utf-8") as f:
+with open('2019/inputs/day24_1.txt', encoding="utf-8") as f:
     input = f.read()
 
 
@@ -29,13 +29,9 @@ def bugs(s):
                 if tile == '.':
                     new_row += '#' if adjacent_bugs in [1, 2] else '.'
             new_state.append(new_row)
-        print()
-        for line in state:
-            print(line)
 
         state_str = ''.join(state)
         if state_str in history:
-            print(state)
             diversity = sum(
                 [2 ** i for i, tile in enumerate(state_str) if tile == '#'])
             return diversity
